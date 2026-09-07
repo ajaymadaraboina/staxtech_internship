@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Rock Paper Scissors</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: white;
+    }
+
+    .game {
+      width: 90%;
+      max-width: 550px;
+      padding: 35px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #cbd5e1;
+      margin-bottom: 30px;
+    }
+
+    .score-board {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 30px;
+    }
+
+    .score {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 18px 30px;
+      border-radius: 12px;
+      min-width: 130px;
+    }
+
+    .score h2 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: #cbd5e1;
+    }
+
+    .score p {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .choices {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    .choice {
+      width: 120px;
+      height: 120px;
+      border: none;
+      border-radius: 18px;
+      background: white;
+      font-size: 3.5rem;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .choice:hover {
+      transform: translateY(-8px) scale(1.05);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .choice:active {
+      transform: scale(0.95);
+    }
+
+    .result {
+      min-height: 80px;
+      margin-top: 20px;
+    }
+
+    #result-text {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #details {
+      color: #cbd5e1;
+    }
+
+    .win {
+      color: #4ade80;
+    }
+
+    .lose {
+      color: #f87171;
+    }
+
+    .draw {
+      color: #facc15;
+    }
+
+    .reset {
+      margin-top: 25px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      background: #6366f1;
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .reset:hover {
+      background: #818cf8;
+    }
+
+    @media (max-width: 500px) {
+      .game {
+        padding: 25px 15px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .choice {
+        width: 90px;
+        height: 90px;
+        font-size: 2.5rem;
+      }
+
+      .score {
+        min-width: 100px;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="game">
+
+    <h1>Rock Paper Scissors</h1>
+
+    <p class="subtitle">
+      Choose your move and beat the computer!
+    </p>
+
+    <!-- SCORE -->
+    <div class="score-board">
+
+      <div class="score">
+        <h2>You</h2>
+        <p id="player-score">0</p>
+      </div>
+
+      <div class="score">
+        <h2>Computer</h2>
+        <p id="computer-score">0</p>
+      </div>
+
+    </div>
+
+    <!-- CHOICES -->
+    <div class="choices">
+
+      <button
+        class="choice"
+        onclick="playGame('rock')"
+        aria-label="Rock"
+      >
+        ✊
+      </button>
+
+      <button
+        class="choice"
+        onclick="playGame('paper')"
+        aria-label="Paper"
+      >
+        ✋
+      </button>
+
+      <button
+        class="choice"
+        onclick="playGame('scissors')"
+        aria-label="Scissors"
+      >
+        ✌️
+      </button>
+
+    </div>
+
+    <!-- RESULT -->
+    <div class="result">
+
+      <p id="result-text">
+        Make your choice!
+      </p>
+
+      <p id="details">
+        Rock beats Scissors • Paper beats Rock • Scissors beats Paper
+      </p>
+
+    </div>
+
+    <!-- RESET -->
+    <button class="reset" onclick="resetGame()">
+      Reset Game
+    </button>
+
+  </div>
+
+
+  <script>
+
+    let playerScore = 0;
+    let computerScore = 0;
+
+    const choices = [
+      "rock",
+      "paper",
+      "scissors"
+    ];
+
+
+    function playGame(playerChoice) {
+
+      // Computer chooses randomly
+      const computerChoice =
+        choices[Math.floor(Math.random() * choices.length)];
+
+      let result = "";
+
+      // Check result
+      if (playerChoice === computerChoice) {
+
+        result = "It's a Draw!";
+        showResult(result, "draw");
+
+      }
+
+      else if (
+        (playerChoice === "rock" && computerChoice === "scissors") ||
+        (playerChoice === "paper" && computerChoice === "rock") ||
+        (playerChoice === "scissors" && computerChoice === "paper")
+      ) {
+
+        playerScore++;
+
+        result = "You Win!";
+        showResult(result, "win");
+
+      }
+
+      else {
+
+        computerScore++;
+
+        result = "Computer Wins!";
+        showResult(result, "lose");
+
+      }
+
+      // Update scores
+      document.getElementById("player-score").textContent =
+        playerScore;
+
+      document.getElementById("computer-score").textContent =
+        computerScore;
+
+      // Show choices
+      document.getElementById("details").textContent =
+        `You chose ${capitalize(playerChoice)} | Computer chose ${capitalize(computerChoice)}`;
+    }
+
+
+    function showResult(message, className) {
+
+      const resultText =
+        document.getElementById("result-text");
+
+      resultText.textContent = message;
+
+      resultText.className = className;
+    }
+
+
+    function capitalize(word) {
+
+      return word.charAt(0).toUpperCase() + word.slice(1);
+
+    }
+
+
+    function resetGame() {
+
+      playerScore = 0;
+      computerScore = 0;
+
+      document.getElementById("player-score").textContent = "0";
+      document.getElementById("computer-score").textContent = "0";
+
+      document.getElementById("result-text").textContent =
+        "Make your choice!";
+
+      document.getElementById("result-text").className = "";
+
+      document.getElementById("details").textContent =
+        "Rock beats Scissors • Paper beats Rock • Scissors beats Paper";
+    }
+
+  </script>
+
+</body>
+</html>
